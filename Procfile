@@ -1,1 +1,1 @@
-web: npm i --dev && ./node_modules/typescript/.bin/tsc && npm start
+web: npm i --include=dev && ./node_modules/typescript/.bin/tsc && npm start
