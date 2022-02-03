@@ -1,1 +1,1 @@
-web: ./node_modules/typescript/bin/tsc && npm start
+worker: ./node_modules/typescript/bin/tsc && npm start
