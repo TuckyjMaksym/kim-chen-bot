@@ -5,7 +5,7 @@
   "scripts": {
     "debug": "nodemon -e js,ts --watch src --exec \"npm run build:ts && npm run start\"",
     "build:ts": "tsc",
-    "start": "tsc && node build/index.js",
+    "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
