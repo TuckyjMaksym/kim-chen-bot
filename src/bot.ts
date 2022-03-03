@@ -16,6 +16,7 @@ export const bot = new Telegraf(process.env.TG_BOT_ACCESS_TOKEN);
 
 bot.on('text', async (ctx) => {
     const words = ctx.message.text.split(' ') || [];
+    const triggerWordsRegex = /(дурка|сук|сюк|база)/;
 
     if (ctx.update.message.text === '/score') {
         const query = { _id: ctx.update.message.from.id };
@@ -34,11 +35,14 @@ bot.on('text', async (ctx) => {
         }, '');
 
         ctx.reply(`Сьогодні наш топ токсіків виглядає наступним чином:\n${topList}`);
-    } else if (words.includes('сук') || words.includes('сюк')) {
-        ctx.replyWithSticker(stickersIds.sadCatWhy.id);
-    } else {
-        randomEvent(ctx);
+    } else if (triggerWordsRegex.test(ctx.message.text)) {
+        if (words.includes('сук') || words.includes('сюк')) {
+            ctx.replyWithSticker(stickersIds.sadCatWhy.id);
+        } else if (words.includes('дурка') || words.includes('база')) {
+            ctx.replyWithSticker(stickersIds.durkaWolf.id);
+        }
     }
+    randomEvent(ctx);
 })
 
 bot.on('sticker', async (ctx) => {
