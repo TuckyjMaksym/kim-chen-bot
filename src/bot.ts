@@ -1,19 +1,18 @@
+// Modules
 import { Telegraf } from 'telegraf';
+
+// Database
 import { scores } from './db';
 
+// Events
+import { randomEvent } from './events';
+
+// Utils
 import * as stickersIds from './stickersIds';
+import { getMessage, getMessageForTopUsers } from './utils';
 
+export const tgBotId = 5112385808;
 export const bot = new Telegraf(process.env.TG_BOT_ACCESS_TOKEN);
-const getMessage = (file_unique_id: string, name: string) => {
-    const texts: { [key: string]: string } = {
-        [stickersIds.diyaPlusTenId]: `Володя накинув 10 соціальних кредитів користувачу ${name}`,
-        [stickersIds.diyaPlusFiftyId]: `Кім Чен Ин розщіпнув ширінку і дістав звідти 50 соціальних кредитів для користувача ${name}`,
-        [stickersIds.diyaMinusTenId]: `${name}, з вас штраф, 10 соціальних кредитів. -10 КЕКВ`,
-        [stickersIds.diyaMinusFiftyId]: `Ну і крінжа ${name}, я тебе на 50 соціальних кредитів бахну, будеш знав`
-    }
-
-    return texts[file_unique_id];
-}
 
 bot.on('text', async (ctx) => {
     if (ctx.update.message.text === '/score') {
@@ -23,6 +22,18 @@ bot.on('text', async (ctx) => {
         const score = result.social_credits_score;
 
         ctx.reply(`${name} Якшо скріпт правильно РОБЕ то в тебе >>${score}<< соціальних кредитів.`);
+    } else if (ctx.update.message.text === '/top') {
+        const query = {};
+        const result = await scores.find(query).limit(3).sort({ social_credits_score: -1 }).toArray();
+        const topList = result.reduce((str, user, index) => {
+            const message = getMessageForTopUsers(index, user.tg_username, user.social_credits_score);
+
+            return `${str}\n${message}`;
+        }, '');
+
+        ctx.reply(`Сьогодні наш топ токсіків виглядає наступним чином:\n${topList}`);
+    } else {
+        randomEvent(ctx);
     }
 })
 
@@ -30,13 +41,13 @@ bot.on('sticker', async (ctx) => {
     if (ctx?.update?.message) {
         const {
             update: {
-                message: { sticker, reply_to_message, from }
+                message: { sticker, reply_to_message, from, chat }
             },
-            chat,
         } = ctx;
         const isRepliedToSelf = from.id === reply_to_message?.from?.id;
+        const isRepliedToBot = tgBotId === reply_to_message?.from?.id
 
-        if (chat.id === +process.env.MAIN_CHAT_ID && !isRepliedToSelf && reply_to_message && sticker) {
+        if (!isRepliedToBot && !isRepliedToSelf && reply_to_message && sticker) {
             // Whom to update social credits score
             const name = `@${reply_to_message.from.username}`; 
             // Sticker to rating change values
@@ -46,17 +57,20 @@ bot.on('sticker', async (ctx) => {
                 [stickersIds.diyaMinusTenId]: -10,
                 [stickersIds.diyaMinusFiftyId]: -50,
             }
-            const ratingChange = ratingsUpdates[sticker.file_unique_id];
+            const ratingChange = ratingsUpdates[sticker.file_id];
 
             // If rating changed, update value in database
             if (scores && ratingChange) {
                 const query = { _id: reply_to_message.from.id };
-                const update = { $inc: { social_credits_score: ratingChange } };
+                const update = {
+                    $inc: { social_credits_score: ratingChange },
+                    $set: { tg_username: reply_to_message.from.username, tg_chat_id: chat.id },
+                };
                 const options = { upsert: true };
-                const result = await scores.updateOne(query, update, options);
+                await scores.updateOne(query, update, options);
 
-                const message = getMessage(sticker.file_unique_id, name);
-                
+                const message = getMessage(sticker.file_id, name);
+
                 if (message) {
                     ctx.reply(message);
                 }
