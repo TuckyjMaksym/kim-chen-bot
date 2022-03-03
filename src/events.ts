@@ -7,7 +7,7 @@ import { scores } from './db';
 import * as stickersIds from './stickersIds';
 
 const eventChances = {
-    mayorPenalty: 0.05,
+    mayorPenalty: 0.03,
 }
 
 export const randomEvent = (ctx: Context<Update>) => {
@@ -15,7 +15,7 @@ export const randomEvent = (ctx: Context<Update>) => {
 
     if (mayorChanceValue < eventChances.mayorPenalty) {
         ctx.reply('До вас завітав представник КНДР по контролю якості мемів Зубенко Михайло Петрович');
-        ctx.replyWithSticker(stickersIds.mayorPortrait);
+        ctx.replyWithSticker(stickersIds.mayorPortrait.id);
         ctx.reply('Зараз він проведе аналіз матеріалів і вирішить вашу долю...');
 
         setTimeout(() => {
@@ -42,7 +42,7 @@ export const randomEvent = (ctx: Context<Update>) => {
                     ctx.reply('Михайло Петрович ніколи ще не був таким злим. Такого насиченого кала він давно не нюхав. Будуть наказані всі! І дуже жорстоко!');
                     ratingChange = -100;
                 }
-                ctx.replyWithSticker(stickersIds.mayorPenalty);
+                ctx.replyWithSticker(stickersIds.mayorPenalty.id);
             } else {
                 if (Math.random() < 0.99) {
                     ctx.reply('Провівши огляд усіх матеріалів. Михайло Петрович задоволений якістю, ставить лайк і просить ватажка накинути кожному по 10 злотих');
@@ -51,7 +51,7 @@ export const randomEvent = (ctx: Context<Update>) => {
                     ctx.reply('Оце так рофл. Давно так представник не кекав векав. Він настільки задоволений що хоче вас бачить в Партії Кеків Народу, через що накинув вам +100 до вашого рейтингу челікослава');
                     ratingChange = 100;
                 }
-                ctx.replyWithSticker(stickersIds.mayorBonus);
+                ctx.replyWithSticker(stickersIds.mayorBonus.id);
             }
             updateDocs(ratingChange);
         }, 1000);
