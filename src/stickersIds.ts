@@ -6,11 +6,11 @@ export const diyaMinusFiftyId = { unique_id: 'AgAD8gsAAuATYUk', id: 'CAACAgIAAxk
 
 // Respond to sticker
 export const kadyrovIzvinis = { unique_id: 'AgADJAADyb5BIA', id: 'CAACAgIAAxkBAAOoYiEpK6Q4bBpyl41rbEq7bklOPIQAAiQAA8m-QSAb44uVzm7BgCME' }; // Respond with "дон"
-export const sadCat = { unique_id: 'AgADpo0AAmOLRgw', id: 'CAACAgIAAxkBAAN1YiEbeHuxLfTjBHMxXoaXprkyr7kAAqaNAAJji0YM4q5aAUodEZgjBA' }; // Send sad cat face sticker when same sticker received
 
 // Respond to text
 export const durkaWolf = { unique_id: 'AgADHwADyb5BIA', id: 'CAACAgIAAxkBAAPEYiEtU4-KOyWlXxHa64h8GEc7TY4AAh8AA8m-QSB90FL5ikcTgCME' }; // Sent on 'Дурка' or 'База' words
 export const sadCatWhy = { unique_id: 'AgADE44AAmOLRgw', id: 'CAACAgIAAxkBAAN0YiEbbdaZ1217w25ytumkaU33-GgAAhOOAAJji0YMG6bGs64XroYjBA' }; // Sent when "сук" or "сюк" is written
+export const noPooCert = { unique_id: 'AgAD7xAAAq2ZCEo', id: 'CAACAgIAAxkBAAPPYiHubJPFwEsRzoQzsvXHDEKWwDoAAu8QAAKtmQhKWzlVb4KSA2YjBA' }; // Sent when poo related texts received
 
 // Random events
 export const mayorPenalty = { unique_id: 'AgADYBIAAkx-MEs', id: 'CAACAgIAAxkBAANyYiEbUhjmpk9aA-_45D7zGSB8JmUAAmASAAJMfjBL9RoQsOohX9gjBA' }; // Angry mayor takes 10 points from each user

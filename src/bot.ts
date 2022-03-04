@@ -16,7 +16,8 @@ export const bot = new Telegraf(process.env.TG_BOT_ACCESS_TOKEN);
 
 bot.on('text', async (ctx) => {
     const words = ctx.message.text.split(' ') || [];
-    const triggerWordsRegex = /(дурка|сук|сюк|база)/;
+    const triggerWordsRegex = /(дурка|база|сук|сюк)/i;
+    const pooRegex = /(посру)|([по]*(сра|сру|кака|кека)[тиью])/i;
 
     if (ctx.update.message.text === '/score') {
         const query = { _id: ctx.update.message.from.id };
@@ -35,11 +36,13 @@ bot.on('text', async (ctx) => {
         }, '');
 
         ctx.reply(`Сьогодні наш топ токсіків виглядає наступним чином:\n${topList}`);
-    } else if (triggerWordsRegex.test(ctx.message.text)) {
+    } else if (triggerWordsRegex.test(ctx.message.text) || pooRegex.test(ctx.message.text)) {
         if (words.includes('сук') || words.includes('сюк')) {
             ctx.replyWithSticker(stickersIds.sadCatWhy.id);
         } else if (words.includes('дурка') || words.includes('база')) {
             ctx.replyWithSticker(stickersIds.durkaWolf.id);
+        } else if (pooRegex.test(ctx.message.text)) {
+            ctx.replyWithSticker(stickersIds.noPooCert.id, { reply_to_message_id: ctx.message.message_id });
         }
     }
     randomEvent(ctx);
@@ -52,6 +55,7 @@ bot.on('sticker', async (ctx) => {
                 message: { sticker, reply_to_message, from, chat }
             },
         } = ctx;
+        console.log("🚀 ~ file: bot.ts ~ line 54 ~ bot.on ~ sticker", sticker)
         const isRepliedToSelf = from.id === reply_to_message?.from?.id;
         const isRepliedToBot = tgBotId === reply_to_message?.from?.id
 
@@ -91,10 +95,6 @@ bot.on('sticker', async (ctx) => {
             switch (sticker.file_unique_id) {
                 case stickersIds.kadyrovIzvinis.unique_id: {
                     ctx.reply('дон');
-                    break;
-                }
-                case stickersIds.sadCat.unique_id: {
-                    ctx.replyWithSticker(stickersIds.sadCat.id);
                     break;
                 }
                 default: break;
