@@ -8,6 +8,7 @@ import * as stickersIds from './stickersIds';
 
 const eventChances = {
     mayorPenalty: 0.03,
+    mayorBoost: 0.1
 }
 
 export const randomEvent = (ctx: Context<Update>) => {
@@ -35,16 +36,16 @@ export const randomEvent = (ctx: Context<Update>) => {
             let ratingChange = 0;
             
             if (isAngry) {
-                if (Math.random() < 0.99) {
+                if (Math.random() > eventChances.mayorBoost) {
                     ctx.reply('Після побаченого Михайло Петрович розізлився. Він дістав книгу штрафів і виписав кожному карточку на -10 соціальних кредитів.')
                     ratingChange = -10;
                 } else {
-                    ctx.reply('Михайло Петрович ніколи ще не був таким злим. Такого насиченого кала він давно не нюхав. Будуть наказані всі! І дуже жорстоко!');
+                    ctx.reply('Михайло Петрович ніколи ще не був таким злим. Такого насиченого кала він давно не нюхав. Будуть наказані всі! І дуже жорстоко! Він виймає свого прутня і пхає всім в горлянку по -100 гривень');
                     ratingChange = -100;
                 }
                 ctx.replyWithSticker(stickersIds.mayorPenalty.id);
             } else {
-                if (Math.random() < 0.99) {
+                if (Math.random() > eventChances.mayorBoost) {
                     ctx.reply('Провівши огляд усіх матеріалів. Михайло Петрович задоволений якістю, ставить лайк і просить ватажка накинути кожному по 10 злотих');
                     ratingChange = 10;
                 } else {

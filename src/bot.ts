@@ -17,6 +17,7 @@ export const bot = new Telegraf(process.env.TG_BOT_ACCESS_TOKEN);
 bot.on('text', async (ctx) => {
     const words = ctx.message.text.split(' ') || [];
     const triggerWordsRegex = /(дурка|база|сук|сюк)/i;
+    const pooResponseChance = 0.5;
     const pooRegex = /(посру)|([по]*(сра|сру|кака|кека)[тиью])/i;
     const kekRegex = /(kek[w]*|кек[в]*|рофл|[ао]р[у]|ор[у]*|л[оеу]л|rofl|lol)/i; // This can match substring, used only in condition
 
@@ -42,7 +43,7 @@ bot.on('text', async (ctx) => {
             ctx.replyWithSticker(stickersIds.sadCatWhy.id);
         } else if (words.includes('дурка') || words.includes('база')) {
             ctx.replyWithSticker(stickersIds.durkaWolf.id);
-        } else if (pooRegex.test(ctx.message.text)) {
+        } else if (Math.random() > pooResponseChance && pooRegex.test(ctx.message.text)) {
             ctx.replyWithSticker(stickersIds.noPooCert.id, { reply_to_message_id: ctx.message.message_id });
         } else if (words.some(word => /^(kek[w]*|кек[в]*|рофл|[ао]р[у]|ор[у]*|л[оеу]л|rofl|lol)$/i.test(word))) {
             const randomIndex = Math.floor(Math.random() * stickersIds.kekWStickers.length);
