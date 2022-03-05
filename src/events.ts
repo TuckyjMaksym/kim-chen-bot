@@ -54,6 +54,6 @@ export const randomEvent = (ctx: Context<Update>) => {
                 ctx.replyWithSticker(stickersIds.mayorBonus.id);
             }
             updateDocs(ratingChange);
-        }, 1000);
+        }, 10000);
     }
 }

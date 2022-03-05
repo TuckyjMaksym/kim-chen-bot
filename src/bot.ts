@@ -18,6 +18,7 @@ bot.on('text', async (ctx) => {
     const words = ctx.message.text.split(' ') || [];
     const triggerWordsRegex = /(дурка|база|сук|сюк)/i;
     const pooRegex = /(посру)|([по]*(сра|сру|кака|кека)[тиью])/i;
+    const kekRegex = /(kek[w]*|кек[в]*|рофл|[ао]р[у]|ор[у]*|л[оеу]л|rofl|lol)/i; // This can match substring, used only in condition
 
     if (ctx.update.message.text === '/score') {
         const query = { _id: ctx.update.message.from.id };
@@ -36,13 +37,17 @@ bot.on('text', async (ctx) => {
         }, '');
 
         ctx.reply(`Сьогодні наш топ токсіків виглядає наступним чином:\n${topList}`);
-    } else if (triggerWordsRegex.test(ctx.message.text) || pooRegex.test(ctx.message.text)) {
+    } else if (triggerWordsRegex.test(ctx.message.text) || pooRegex.test(ctx.message.text) || kekRegex.test(ctx.message.text)) {
         if (words.includes('сук') || words.includes('сюк')) {
             ctx.replyWithSticker(stickersIds.sadCatWhy.id);
         } else if (words.includes('дурка') || words.includes('база')) {
             ctx.replyWithSticker(stickersIds.durkaWolf.id);
         } else if (pooRegex.test(ctx.message.text)) {
             ctx.replyWithSticker(stickersIds.noPooCert.id, { reply_to_message_id: ctx.message.message_id });
+        } else if (words.some(word => /^(kek[w]*|кек[в]*|рофл|[ао]р[у]|ор[у]*|л[оеу]л|rofl|lol)$/i.test(word))) {
+            const randomIndex = Math.floor(Math.random() * stickersIds.kekWStickers.length);
+
+            ctx.replyWithSticker(stickersIds.kekWStickers[randomIndex]);
         }
     }
     randomEvent(ctx);
