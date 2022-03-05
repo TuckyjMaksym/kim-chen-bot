@@ -60,7 +60,6 @@ bot.on('sticker', async (ctx) => {
                 message: { sticker, reply_to_message, from, chat }
             },
         } = ctx;
-        console.log("🚀 ~ file: bot.ts ~ line 54 ~ bot.on ~ sticker", sticker)
         const isRepliedToSelf = from.id === reply_to_message?.from?.id;
         const isRepliedToBot = tgBotId === reply_to_message?.from?.id
 
