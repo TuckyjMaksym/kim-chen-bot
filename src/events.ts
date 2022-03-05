@@ -22,13 +22,7 @@ export const randomEvent = (ctx: Context<Update>) => {
         setTimeout(() => {
             const updateDocs = (rating: number) => {
                 const filter = { tg_chat_id: ctx.message.chat.id };
-                const update = {
-                    $inc: { social_credits_score: rating },
-                    $set: {
-                        tg_username: ctx.message.from.username,
-                        tg_chat_id: ctx.chat.id,
-                    },
-                };
+                const update = { $inc: { social_credits_score: rating } };
 
                 scores.updateMany(filter, update);
             }
