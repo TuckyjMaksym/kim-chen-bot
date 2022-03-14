@@ -7,7 +7,7 @@ import { scores } from './db';
 import * as stickersIds from './stickersIds';
 
 const eventChances = {
-    mayorPenalty: 0.03,
+    mayorPenalty: 0.01,
     mayorBoost: 0.1
 }
 
