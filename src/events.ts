@@ -15,40 +15,45 @@ export const randomEvent = (ctx: Context<Update>) => {
     const mayorChanceValue = Math.random();
 
     if (mayorChanceValue < eventChances.mayorPenalty) {
-        ctx.reply('До вас завітав представник КНДР по контролю якості мемів Зубенко Михайло Петрович');
-        ctx.replyWithSticker(stickersIds.mayorPortrait.id);
-        ctx.reply('Зараз він проведе аналіз матеріалів і вирішить вашу долю...');
+        const updateDocs = (rating: number) => {
+            const filter = { tg_chat_id: ctx.message.chat.id };
+            const update = { $inc: { social_credits_score: rating } };
 
-        setTimeout(() => {
-            const updateDocs = (rating: number) => {
-                const filter = { tg_chat_id: ctx.message.chat.id };
-                const update = { $inc: { social_credits_score: rating } };
+            scores.updateMany(filter, update);
+        }
+        const isAngry = Math.random() > 0.5;
+        let ratingChange = 0;
+        const nameRandomNumber = Math.random();
+        let name = '';
+        
+        if (nameRandomNumber <= 0.33) {
+            name = 'Максим Максимович Максимів ака "Дешбордовець"';
+        } else if (nameRandomNumber > 0.33 && nameRandomNumber <= 0.67) {
+            name = 'Вітальбан Кекандровець ака "Лежу адихаю"'
+        } else if (nameRandomNumber > 0.67) {
+            name = 'мій творець Максим ака "Безробітний"'
+        }
+        const start = `Вітаю, мене покликав ${name}. `;
 
-                scores.updateMany(filter, update);
-            }
-            const isAngry = Math.random() > 0.5;
-            let ratingChange = 0;
-            
-            if (isAngry) {
-                if (Math.random() > eventChances.mayorBoost) {
-                    ctx.reply('Після побаченого Михайло Петрович розізлився. Він дістав книгу штрафів і виписав кожному карточку на -10 соціальних кредитів.')
-                    ratingChange = -10;
-                } else {
-                    ctx.reply('Михайло Петрович ніколи ще не був таким злим. Такого насиченого кала він давно не нюхав. Будуть наказані всі! І дуже жорстоко! Він виймає свого прутня і пхає всім в горлянку по -100 гривень');
-                    ratingChange = -100;
-                }
-                ctx.replyWithSticker(stickersIds.mayorPenalty.id);
+        if (isAngry) {
+            if (Math.random() > eventChances.mayorBoost) {
+                ctx.reply(`${start}Він повідомив що ви не сплачуєте податки, тому я штрафую вас на 10 соціальних кредитів.`);
+                ratingChange = -10;
             } else {
-                if (Math.random() > eventChances.mayorBoost) {
-                    ctx.reply('Провівши огляд усіх матеріалів. Михайло Петрович задоволений якістю, ставить лайк і просить ватажка накинути кожному по 10 злотих');
-                    ratingChange = 10;
-                } else {
-                    ctx.reply('Оце так рофл. Давно так представник не кекав векав. Він настільки задоволений що хоче вас бачить в Партії Кеків Народу, через що накинув вам +100 до вашого рейтингу челікослава');
-                    ratingChange = 100;
-                }
-                ctx.replyWithSticker(stickersIds.mayorBonus.id);
+                ctx.reply(`${start}Він поскаржився на те що ви його ображаєте, у звязку з цим я забираю у вас 100 соціальних кредитів.`);
+                ratingChange = -100;
             }
-            updateDocs(ratingChange);
-        }, 10000);
+            ctx.replyWithSticker(stickersIds.mayorPenalty.id);
+        } else {
+            if (Math.random() > eventChances.mayorBoost) {
+                ctx.reply(`${start}Він повідомив що ви тут обсираєте москалів і Путіна, за це, я вам накину по 10 балів. Слава Україні!`);
+                ratingChange = 10;
+            } else {
+                ratingChange = Math.random() * 400 + 100;
+                ctx.reply(`${start}Він повідомив мені гарну новину, тому за кожного москаля що помер сьогодні на нашій землі я вам накину по 1 балу. Сьогодні ви отримуєте +${ratingChange} соціальних кредитів кожен.`);
+            }
+            ctx.replyWithSticker(stickersIds.mayorBonus.id);
+        }
+        updateDocs(ratingChange);
     }
 }
