@@ -1,4 +1,5 @@
 // Modules
+import axios from 'axios';
 import { Telegraf } from 'telegraf';
 
 // Database
@@ -11,6 +12,9 @@ import { randomEvent } from './events';
 import * as stickersIds from './stickersIds';
 import { getMessage, getMessageForTopUsers } from './utils';
 
+// Types
+import { TRatesResponseData } from './types';
+
 export const tgBotId = 5112385808;
 export const bot = new Telegraf(process.env.TG_BOT_ACCESS_TOKEN);
 
@@ -19,7 +23,7 @@ bot.on('text', async (ctx) => {
     const triggerWordsRegex = /(дурка|база|сук|сюк)/i;
     const pooResponseChance = 0.5;
     const pooRegex = /(посру)|([по]*(сра|сру|кака|кека)[тиью])/i;
-    const kekRegex = /(kek[w]*|кек[в]*|рофл|[ао]р[у]|ор[у]*|л[оеу]л|rofl|lol)/i; // This can match substring, used only in condition
+    const kekRegex = /(kek[w]*|кек[в]*|рофл|[ао]р[у]|ор[у]*|л[оеу]л|rofl|lol)/i; // This can match substring in sentence, used only in condition
 
     if (ctx.update.message.text === '/score') {
         const query = { _id: ctx.update.message.from.id };
@@ -38,6 +42,17 @@ bot.on('text', async (ctx) => {
         }, '');
 
         ctx.reply(`Сьогодні наш топ токсіків виглядає наступним чином:\n${topList}`);
+    }else if (ctx.update.message.text === '$') {
+        const url = `https://openexchangerates.org/api/latest.json?app_id=${process.env.OPENEXCHANGERATES_APP_ID}&symbols=UAH,RUB`;
+        const response = await axios({ url });
+
+        if (response.status === 200) {
+            const { timestamp, rates } = response.data as TRatesResponseData;
+            const date = new Date(timestamp * 1000).toLocaleString('ua');
+            const message = `Курс валют станом на ${date}\n\nГривня - ₴${rates.UAH.toFixed(2)}\nРубль - ₽${rates.RUB.toFixed(2)}`;
+
+            ctx.reply(message);
+        }
     } else if (triggerWordsRegex.test(ctx.message.text) || pooRegex.test(ctx.message.text) || kekRegex.test(ctx.message.text)) {
         if (words.includes('сук') || words.includes('сюк')) {
             ctx.replyWithSticker(stickersIds.sadCatWhy.id);
