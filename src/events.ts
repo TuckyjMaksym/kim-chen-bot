@@ -17,7 +17,7 @@ export const randomEvent = (ctx: Context<Update>) => {
     if (mayorChanceValue < eventChances.mayorPenalty) {
         const updateDocs = (rating: number) => {
             const filter = { tg_chat_id: ctx.message.chat.id };
-            const update = { $inc: { social_credits_score: rating } };
+            const update = { $inc: { social_credits_score: Math.round(rating) } };
 
             scores.updateMany(filter, update);
         }
